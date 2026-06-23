@@ -7,10 +7,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Cambiamos SQLite por PostgreSQL apuntando directamente a Neon
-string connectionString = "TU_CADENA_DE_CONEXION_DE_NEON";
+// Creamos la ruta de forma compatible con Linux de Render
+string dbPath = Path.Combine("/tmp", "techstore.db");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -22,19 +22,19 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// 2. CREACIÓN AUTOMÁTICA DE TABLAS EN NEON
+// 2. CREACIÓN AUTOMÁTICA DE LA BASE DE DATOS LOCAL
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        // Esto creará las tablas (como la de Inventario) automáticamente en Neon
         context.Database.EnsureCreated();
+        Console.WriteLine("¡Base de datos SQLite creada con éxito en /tmp/techstore.db!");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error al sincronizar con Neon: {ex.Message}");
+        Console.WriteLine($"Error critico al crear la base de datos: {ex.Message}");
     }
 }
 
