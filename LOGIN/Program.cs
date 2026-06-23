@@ -21,23 +21,23 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Bloque para forzar la creación de la base de datos al iniciar
+// Bloque para asegurar la creación de la base de datos en el entorno
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+        // Esto creará el archivo app.db dentro de la carpeta /tmp/
         context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Ocurrió un error al crear la base de datos.");
+        // En caso de error, lo veremos en los logs de Render
+        Console.WriteLine($"Error crítico al crear la base de datos: {ex.Message}");
     }
 }
 
-// Configuración del pipeline de la aplicación
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
