@@ -7,9 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Configuración de base de datos con SQLite
+// Configuración de base de datos con ruta directa para evitar errores de formato
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite("Data Source=/tmp/app.db"));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -21,19 +21,18 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Bloque para asegurar la creación de la base de datos en el entorno
+// Bloque para asegurar la creación de la base de datos
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
-        // Esto creará el archivo app.db dentro de la carpeta /tmp/
         context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        // En caso de error, lo veremos en los logs de Render
+        // Esto aparecerá en los logs de Render si falla
         Console.WriteLine($"Error crítico al crear la base de datos: {ex.Message}");
     }
 }
