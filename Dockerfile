@@ -1,22 +1,20 @@
-# Estructura oficial para compilar apps de .NET 8 en Render
+# Estructura optimizada para la app de Nilson
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
 WORKDIR /app
 
-# Copiar archivos del proyecto y restaurar dependencias
-COPY *.sln ./
-COPY LOGIN/*.csproj ./LOGIN/
-RUN dotnet restore
-
-# Copiar todo lo demás y compilar
+# Copiamos todo el contenido primero
 COPY . ./
-RUN dotnet publish -c Release -o out
+
+# Restauramos y compilamos apuntando directo al proyecto
+RUN dotnet restore "LOGIN/LOGIN.csproj"
+RUN dotnet publish "LOGIN/LOGIN.csproj" -c Release -o out
 
 # Crear la imagen final de ejecución
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 
-# Configurar el puerto automático de Render
+# Puerto automático para Render
 ENV ASPNETCORE_URLS=http://+:10000
 
 ENTRYPOINT ["dotnet", "LOGIN.dll"]
