@@ -3,13 +3,14 @@ using LOGIN.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configuración de servicios
+// 1. CONFIGURACIÓN DE SERVICIOS
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Configuración de base de datos con ruta directa para evitar errores de formato
+// Cambiamos SQLite por PostgreSQL apuntando directamente a Neon
+string connectionString = "TU_CADENA_DE_CONEXION_DE_NEON";
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=/tmp/app.db"));
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
@@ -21,22 +22,23 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
-// Bloque para asegurar la creación de la base de datos
+// 2. CREACIÓN AUTOMÁTICA DE TABLAS EN NEON
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
+        // Esto creará las tablas (como la de Inventario) automáticamente en Neon
         context.Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        // Esto aparecerá en los logs de Render si falla
-        Console.WriteLine($"Error crítico al crear la base de datos: {ex.Message}");
+        Console.WriteLine($"Error al sincronizar con Neon: {ex.Message}");
     }
 }
 
+// 3. PIPELINE DE LA APLICACIÓN
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
