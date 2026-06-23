@@ -1,0 +1,162 @@
+﻿@model IEnumerable<LOGIN.Models.Producto>
+@{
+    ViewData["Title"] = "Tienda";
+}
+
+<div class="d-flex justify-content-between align-items-end mb-4">
+    <div>
+        <h1 class="display-5 fw-bold text-dark mb-0"><i class="bi bi-shop text-primary"></i> Catálogo</h1>
+        <p class="text-muted mt-2">Encuentra los mejores productos al mejor precio.</p>
+    </div>
+    <a asp-action="Carrito" class="btn btn-dark rounded-pill px-4 py-2 position-relative shadow-sm">
+        <i class="bi bi-cart3 fs-5"></i>
+        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: @(ViewBag.CarritoCount > 0 ? "block" : "none");">
+            @ViewBag.CarritoCount
+        </span>
+        <span class="ms-2 fw-semibold">Mi Carrito</span>
+    </a>
+</div>
+
+<div class="row g-4">
+    @foreach (var producto in Model)
+    {
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card producto-card h-100 border-0">
+                <div class="card-img-top text-center py-5 bg-light position-relative">
+                    @if (producto.Cantidad < 5 && producto.Cantidad > 0)
+                    {
+                        <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark">¡Últimas @producto.Cantidad!</span>
+                    }
+                    <i class="bi bi-box-seam text-secondary opacity-50" style="font-size: 5rem;"></i>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title fw-bold text-dark mb-1">@producto.Nombre</h5>
+                    <p class="card-text text-muted small flex-grow-1 mt-2">
+                        @(producto.Descripcion?.Length > 60 ? producto.Descripcion.Substring(0, 60) + "..." : producto.Descripcion ?? "Sin descripción")
+                    </p>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <span class="fs-4 fw-bold text-primary">@producto.Precio.ToString("C")</span>
+                        @if (producto.Cantidad > 0)
+                        {
+                            <button class="btn btn-sm btn-gradient add-to-cart" data-id="@producto.Id">
+                                <i class="bi bi-cart-plus me-1"></i>Agregar
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-sm btn-light text-danger fw-bold" disabled>Agotado</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    /* 1. Todo el fondo de la pantalla en negro absoluto y textos claros */
+    body, html, main, .container-fluid, .container {
+        background-color: #000000 !important;
+        color: #ffffff !important;
+    }
+
+    /* Cambiar textos principales a blanco para que se lean sobre el fondo negro */
+    h1.text-dark, .card-title.text-dark {
+        color: #ffffff !important;
+    }
+
+    /* Icono del título en Rojo */
+    .bi-shop.text-primary {
+        color: #dc3545 !important;
+    }
+
+    /* 2. Las tarjetas de los productos en negro secundario brillante */
+    .producto-card {
+        background-color: #121212 !important;
+        border: 1px solid #222222 !important;
+        border-radius: 1rem;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.05);
+        transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    /* Contenedor interno de la imagen en un gris muy oscuro */
+    .card-img-top.bg-light {
+        background-color: #1a1a1a !important;
+    }
+
+    /* 3. El efecto Hover cambia a Rojo */
+    .producto-card:hover {
+        transform: translateY(-8px);
+        border-color: #dc3545 !important;
+        box-shadow: 0 12px 25px rgba(220, 53, 69, 0.25) !important;
+    }
+
+    /* 4. El texto de los precios en Rojo Brillante */
+    .text-primary, .fs-4.fw-bold {
+        color: #ff4d5a !important;
+    }
+
+    /* Linea divisoria interna en color oscuro */
+    .border-top {
+        border-top: 1px solid #2d2d2d !important;
+    }
+
+    /* 5. Botones en estilo Rojo Sólido */
+    .btn-gradient, .add-to-cart {
+        background-color: #dc3545 !important;
+        background-image: none !important;
+        color: #ffffff !important;
+        border: none !important;
+        font-weight: 600;
+        transition: background-color 0.2s;
+    }
+
+    .btn-gradient:hover, .add-to-cart:hover {
+        background-color: #b30006 !important;
+        color: #ffffff !important;
+    }
+
+    /* Estilo para las alertas flotantes de SweetAlert (Toasts) */
+    .swal2-popup.swal2-toast {
+        background-color: #121212 !important;
+        color: #ffffff !important;
+        border: 1px solid #dc3545 !important;
+    }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Configuración de SweetAlert para Toasts
+            const Toast = Swal.mixin({
+                toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
+            });
+
+            $('.add-to-cart').click(function() {
+                var btn = $(this);
+                var productoId = btn.data('id');
+
+                // Efecto de carga en el botón
+                var iconOriginal = btn.html();
+                btn.html('<span class="spinner-border spinner-border-sm"></span>');
+
+                $.post('/Tienda/AgregarAlCarrito', { productoId: productoId, cantidad: 1 })
+                    .done(function(response) {
+                        btn.html(iconOriginal); // Restaurar botón
+                        if (response.success) {
+                            if (response.count > 0) {
+                                $('#cart-badge').text(response.count).show();
+                            }
+                            Toast.fire({ icon: 'success', title: 'Agregado al carrito' });
+                        } else {
+                            Toast.fire({ icon: 'error', title: response.message });
+                        }
+                    })
+                    .fail(function() {
+                        btn.html(iconOriginal);
+                        Toast.fire({ icon: 'error', title: 'Error de conexión' });
+                    });
+            });
+        });
+    </script>
+}
