@@ -3,7 +3,7 @@
 }
 
 <div class="container mt-4">
-    <div class="row mb-5">
+    <div class="row mb-4">
         <div class="col-12">
             <div class="card card-modern border-0 overflow-hidden" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
                 <div class="card-body p-5 text-center text-md-start d-md-flex align-items-center justify-content-between">
@@ -21,7 +21,28 @@
         </div>
     </div>
 
-    <h4 class="fw-bold mb-4 text-dark"><i class="bi bi-grid-1x2 text-primary me-2"></i>Accesos Rápidos</h4>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card card-modern border-0 p-4" style="background-color: #0b132b !important; border: 1px solid #1c2541 !important;">
+                <div class="card-body d-flex align-items-center justify-content-between flex-wrap py-2">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center me-3" style="width: 60px; height: 60px; min-width: 60px;">
+                            <i class="bi bi-cash-coin fs-2 text-primary"></i>
+                        </div>
+                        <div>
+                            <h5 class="text-muted small text-uppercase mb-0" style="letter-spacing: 1px;">Monitoreo en Vivo</h5>
+                            <h3 class="fw-bold text-white mb-0">Total Ventas del Día</h3>
+                        </div>
+                    </div>
+                    <div class="mt-3 mt-md-0">
+                        <span class="fs-1 fw-bold" style="color: #00f0ff !important; text-shadow: 0 0 10px rgba(0,240,255,0.2);">Bs. 0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="fw-bold mb-4 text-white"><i class="bi bi-grid-1x2 text-primary me-2"></i>Accesos Rápidos</h4>
 
     <div class="row g-4">
         <div class="col-md-4">
@@ -30,7 +51,7 @@
                     <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
                         <i class="bi bi-box-seam fs-1 text-info"></i>
                     </div>
-                    <h4 class="fw-bold text-dark">Inventario</h4>
+                    <h4 class="fw-bold text-white">Inventario</h4>
                     <p class="text-muted small flex-grow-1">Gestiona los productos, agrega nuevo stock, actualiza precios y descripciones.</p>
                     <a asp-controller="ProductosView" asp-action="Index" class="btn btn-outline-info rounded-pill w-100 mt-3 fw-semibold">
                         Administrar <i class="bi bi-arrow-right ms-1"></i>
@@ -45,7 +66,7 @@
                     <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
                         <i class="bi bi-cart3 fs-1 text-success"></i>
                     </div>
-                    <h4 class="fw-bold text-dark">Tienda Virtual</h4>
+                    <h4 class="fw-bold text-white">Tienda Virtual</h4>
                     <p class="text-muted small flex-grow-1">Explora el catálogo público, agrega productos al carrito y realiza compras simuladas.</p>
                     <a asp-controller="Tienda" asp-action="Index" class="btn btn-outline-success rounded-pill w-100 mt-3 fw-semibold">
                         Visitar Tienda <i class="bi bi-arrow-right ms-1"></i>
@@ -60,9 +81,9 @@
                     <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mx-auto mb-4" style="width: 80px; height: 80px;">
                         <i class="bi bi-bag-check fs-1 text-warning"></i>
                     </div>
-                    <h4 class="fw-bold text-dark">Mis Pedidos</h4>
+                    <h4 class="fw-bold text-white">Mis Pedidos</h4>
                     <p class="text-muted small flex-grow-1">Revisa el historial de tus compras, facturas y el estado de tus pedidos recientes.</p>
-                    <a asp-controller="Tienda" asp-action="MisCompras" class="btn btn-outline-warning rounded-pill w-100 mt-3 fw-semibold text-dark">
+                    <a asp-controller="Tienda" asp-action="MisCompras" class="btn btn-outline-warning rounded-pill w-100 mt-3 fw-semibold text-white">
                         Ver Historial <i class="bi bi-arrow-right ms-1"></i>
                     </a>
                 </div>
