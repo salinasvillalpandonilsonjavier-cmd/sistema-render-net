@@ -159,19 +159,6 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     
-    <!-- Script de registro del Service Worker para PWA -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', function() {
-                navigator.serviceWorker.register('/sw.js').then(function(registration) {
-                    console.log('Service Worker registrado con éxito:', registration.scope);
-                }, function(err) {
-                    console.log('Error al registrar el Service Worker:', err);
-                });
-            });
-        }
-    </script>
-    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
