@@ -8,7 +8,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
 // SOLUCIÓN GRATUITA: Guardar la base de datos dentro de la carpeta del proyecto
-string dbPath = Path.Combine(AppContext.BaseDirectory, "techstore.db");
+string dbPath = Path.Combine(Directory.GetCurrentDirectory(), "techstore.db");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
