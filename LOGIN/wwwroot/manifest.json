@@ -3,12 +3,12 @@
   "name": "AdoMarket Virtual App",
   "icons": [
     {
-      "src": "/images/icon-192.jpg",
+      "src": "/images/icon-192.jpg.jpg",
       "type": "image/jpeg",
       "sizes": "192x192"
     },
     {
-      "src": "/images/icon-512.jpg",
+      "src": "/images/icon-512.jpg.jpg",
       "type": "image/jpeg",
       "sizes": "512x512"
     }

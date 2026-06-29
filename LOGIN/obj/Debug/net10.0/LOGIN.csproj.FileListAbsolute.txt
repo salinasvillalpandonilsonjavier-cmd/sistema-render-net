@@ -311,5 +311,5 @@ C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\bin\Debug\net10.0\runtimes\w
 C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\bin\Debug\net10.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\bin\Debug\net10.0\runtimes\win-x86\native\e_sqlite3.dll
 C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\obj\Debug\net10.0\LOGIN.sourcelink.json
-C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\obj\Debug\net10.0\compressed\agw4avmbah-{0}-evjbwykins-evjbwykins.gz
 C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\obj\Debug\net10.0\compressed\tvjq9h0j1p-{0}-09b1di9w8x-09b1di9w8x.gz
+C:\Users\HP\Downloads\Nueva carpeta (2)\LOGIN\LOGIN\obj\Debug\net10.0\compressed\agw4avmbah-{0}-vi4bhe0vy3-vi4bhe0vy3.gz
