@@ -7,22 +7,26 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 
-// Creamos la ruta de forma compatible con Linux de Render
-string dbPath = Path.Combine("/tmp", "techstore.db");
+// SOLUCIÓN GRATUITA: Guardar la base de datos dentro de la carpeta del proyecto
+string dbPath = Path.Combine(AppContext.BaseDirectory, "techstore.db");
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
 
 builder.Services.AddDistributedMemoryCache();
+
+// Mantener la sesión activa en el navegador lo más posible
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.IdleTimeout = TimeSpan.FromDays(7); 
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
 
 var app = builder.Build();
 
-// 2. CREACIÓN AUTOMÁTICA DE LA BASE DE DATOS LOCAL
+// 2. CREACIÓN AUTOMÁTICA DE LA BASE DE DATOS
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -30,11 +34,11 @@ using (var scope = app.Services.CreateScope())
     {
         var context = services.GetRequiredService<ApplicationDbContext>();
         context.Database.EnsureCreated();
-        Console.WriteLine("¡Base de datos SQLite creada con éxito en /tmp/techstore.db!");
+        Console.WriteLine($"Base de datos SQLite activa en: {dbPath}");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Error critico al crear la base de datos: {ex.Message}");
+        Console.WriteLine($"Error al crear la base de datos: {ex.Message}");
     }
 }
 
