@@ -1,24 +1,26 @@
 ﻿@model List<LOGIN.Models.Pedido>
 
 @{
-    ViewData["Title"] = "Mis Compras";
+    ViewData["Title"] = "Mis Compras - AdoMarket";
 }
 
 <div class="container mt-4">
-    <div class="card card-modern">
-        <div class="card-header bg-white border-bottom-0 pt-4">
-            <h2 class="h3 fw-bold">
-                <i class="bi bi-clock-history text-info"></i> Mis Compras
-            </h2>
+    <div class="card card-modern border-0" style="background-color: transparent;">
+        <div class="card-header border-bottom-0 pt-4 bg-transparent">
+            <h1 class="display-5 fw-bold text-white mb-0">
+                <i class="bi bi-clock-history me-2" style="color: #00f0ff !important;"></i>Mis Compras
+            </h1>
+            <p class="text-muted mt-2">Revisa el historial de tus compras, facturas y el estado de tus pedidos recientes en Cochabamba.</p>
         </div>
-        <div class="card-body p-4">
+        
+        <div class="card-body p-0 mt-3">
             @if (!Model.Any())
             {
-                <div class="text-center py-5">
-                    <i class="bi bi-receipt fs-1 text-muted"></i>
-                    <h4 class="mt-3">No has realizado compras aún</h4>
+                <div class="text-center py-5 empty-state-box">
+                    <i class="bi bi-receipt mb-3" style="font-size: 4rem; color: #00f0ff !important;"></i>
+                    <h4 class="mt-3 text-white">No has realizado compras aún</h4>
                     <a asp-action="Index" class="btn btn-gradient mt-3">
-                        <i class="bi bi-shop"></i> Comenzar a comprar
+                        <i class="bi bi-shop me-1"></i> Comenzar a comprar
                     </a>
                 </div>
             }
@@ -26,51 +28,62 @@
             {
                 @foreach (var pedido in Model)
                 {
-                    <div class="card mb-3 border">
-                        <div class="card-header bg-light">
-                            <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="card mb-4 border-0 pedido-card shadow-sm">
+                        <div class="card-header py-3" style="background-color: #0e1a3a !important; border-bottom: 1px solid #1c2541 !important;">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                 <div>
-                                    <strong>Pedido #@pedido.Id</strong>
+                                    <strong class="text-white">Pedido #@pedido.Id</strong>
                                     <span class="badge @(pedido.Estado.ToString() switch
-                                          {
-                                              "Confirmado" => "bg-success",
-                                              "Entregado" => "bg-primary",
-                                              "Cancelado" => "bg-danger",
-                                              _ => "bg-secondary"
-                                          }) ms-2">@pedido.Estado</span>
+                                    {
+                                        "Confirmado" => "bg-success",
+                                        "Entregado" => "bg-primary",
+                                        "Cancelado" => "bg-danger",
+                                        _ => "bg-secondary"
+                                    }) ms-2 px-2 py-1 rounded-pill">@pedido.Estado</span>
                                 </div>
                                 <div class="text-muted small">
-                                    <i class="bi bi-calendar"></i> @pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")
+                                    <i class="bi bi-calendar3 me-1"></i> @pedido.FechaPedido.ToString("dd/MM/yyyy HH:mm")
                                 </div>
                             </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-8">
+                        
+                        <div class="card-body p-0" style="background-color: #0b132b !important;">
+                            <div class="row g-0">
+                                <div class="col-md-8 border-end border-dark-custom">
                                     <div class="table-responsive">
-                                        <table class="table table-sm">
+                                        <table class="table table-dark-custom mb-0">
                                             <thead>
-                                                <tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>
+                                                <tr>
+                                                    <th scope="col" class="ps-4">Producto</th>
+                                                    <th scope="col" class="text-center">Cantidad</th>
+                                                    <th scope="col" class="text-end">Precio</th>
+                                                    <th scope="col" class="text-end pe-4">Subtotal</th>
+                                                </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach (var detalle in pedido.Detalles!)
                                                 {
                                                     <tr>
-                                                        <td>@detalle.Producto?.Nombre</td>
-                                                        <td>@detalle.Cantidad</td>
-                                                        <td>@detalle.PrecioUnitario.ToString("C")</td>
-                                                        <td>@detalle.Subtotal.ToString("C")</td>
+                                                        <td class="ps-4 fw-semibold text-white">@detalle.Producto?.Nombre</td>
+                                                        <td class="text-center text-muted">@detalle.Cantidad</td>
+                                                        <td class="text-end text-muted">Bs @detalle.PrecioUnitario.ToString("F2")</td>
+                                                        <td class="text-end pe-4 fw-bold" style="color: #00f0ff !important;">Bs @detalle.Subtotal.ToString("F2")</td>
                                                     </tr>
                                                 }
                                             </tbody>
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="bg-light p-3 rounded">
-                                        <p class="mb-1"><strong>Total:</strong> @pedido.Total.ToString("C")</p>
-                                        <p class="mb-1"><strong>Envío:</strong> @pedido.DireccionEnvio</p>
-                                        <p class="mb-0"><strong>Referencia:</strong> @pedido.NumeroReferencia</p>
+                                
+                                <div class="col-md-4 p-4 d-flex flex-column justify-content-center" style="background-color: #0a1329 !important;">
+                                    <div class="mb-2">
+                                        <span class="text-muted small d-block">Total Pagado:</span>
+                                        <span class="fs-4 fw-bold" style="color: #00f0ff !important;">Bs @pedido.Total.ToString("F2")</span>
+                                    </div>
+                                    <hr style="border-top: 1px solid #1c2541 !important; margin: 10px 0;">
+                                    <div class="small text-muted">
+                                        <p class="mb-1 text-white-50"><strong><i class="bi bi-geo-alt me-1"></i>Envío:</strong> @(string.IsNullOrEmpty(pedido.DireccionEnvio) ? "Recojo en tienda" : pedido.DireccionEnvio)</p>
+                                        <p class="mb-0 text-white-50"><strong><i class="bi bi-hash me-1"></i>Referencia:</strong> <span class="text-info font-monospace">@pedido.NumeroReferencia</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -81,3 +94,81 @@
         </div>
     </div>
 </div>
+
+<style>
+    /* Fondo global estilo AdoMarket */
+    body, html, main, .container-fluid, .container {
+        background-color: #050811 !important;
+        background: radial-gradient(circle at top, #0a1128 0%, #050811 100%) !important;
+        color: #ffffff !important;
+    }
+
+    /* Diseño de las tarjetas de pedidos */
+    .pedido-card {
+        background-color: #0b132b !important;
+        border: 1px solid #1c2541 !important;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    /* Separador lateral interno */
+    .border-end.border-dark-custom {
+        border-color: #1c2541 !important;
+    }
+
+    /* Estilo de tablas oscuras */
+    .table-dark-custom {
+        background-color: transparent !important;
+        color: #ffffff !important;
+    }
+
+    .table-dark-custom thead tr th {
+        background-color: #0d1733 !important;
+        color: #a0aec0 !important;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 1px solid #1c2541 !important;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .table-dark-custom tbody tr td {
+        background-color: #0b132b !important;
+        color: #e2e8f0 !important;
+        border-bottom: 1px solid #1c2541 !important;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        vertical-align: middle;
+    }
+
+    .table-dark-custom tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    /* Caja de estado cuando no hay compras */
+    .empty-state-box {
+        background-color: #0b132b !important;
+        border: 1px solid #1c2541 !important;
+        border-radius: 1rem;
+    }
+
+    /* Botón estilo Neón */
+    .btn-gradient {
+        background-color: #007bff !important;
+        color: #ffffff !important;
+        border: 1px solid #0056b3 !important;
+        font-weight: 600;
+        padding: 0.5rem 1.5rem;
+        border-radius: 50px;
+        transition: all 0.2s ease;
+    }
+
+    .btn-gradient:hover {
+        background-color: #00f0ff !important;
+        border-color: #00f0ff !important;
+        color: #050811 !important;
+        box-shadow: 0 0 10px #00f0ff;
+    }
+</style>
