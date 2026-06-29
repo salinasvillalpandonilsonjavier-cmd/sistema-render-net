@@ -1,14 +1,16 @@
 ﻿@model IEnumerable<LOGIN.Models.Producto>
 @{
-    ViewData["Title"] = "Tienda";
+    ViewData["Title"] = "AdoMarket - Catálogo";
 }
 
 <div class="d-flex justify-content-between align-items-end mb-4">
     <div>
-        <h1 class="display-5 fw-bold text-dark mb-0"><i class="bi bi-shop text-primary"></i> Catálogo</h1>
+        <h1 class="display-5 fw-bold text-white mb-0">
+            <i class="bi bi-shop me-2" style="color: #00f0ff !important;"></i>Catálogo
+        </h1>
         <p class="text-muted mt-2">Encuentra los mejores productos al mejor precio.</p>
     </div>
-    <a asp-action="Carrito" class="btn btn-dark rounded-pill px-4 py-2 position-relative shadow-sm">
+    <a asp-action="Carrito" class="btn btn-primary rounded-pill px-4 py-2 position-relative shadow-sm" style="background-color: #007bff !important; border-color: #0056b3 !important;">
         <i class="bi bi-cart3 fs-5"></i>
         <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: @(ViewBag.CarritoCount > 0 ? "block" : "none");">
             @ViewBag.CarritoCount
@@ -22,20 +24,20 @@
     {
         <div class="col-md-6 col-lg-4 col-xl-3">
             <div class="card producto-card h-100 border-0">
-                <div class="card-img-top text-center py-5 bg-light position-relative">
+                <div class="card-img-top text-center py-5 position-relative">
                     @if (producto.Cantidad < 5 && producto.Cantidad > 0)
                     {
                         <span class="position-absolute top-0 start-0 m-3 badge bg-warning text-dark">¡Últimas @producto.Cantidad!</span>
                     }
-                    <i class="bi bi-box-seam text-secondary opacity-50" style="font-size: 5rem;"></i>
+                    <i class="bi bi-box-seam text-muted opacity-50" style="font-size: 5rem; color: #00f0ff !important;"></i>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title fw-bold text-dark mb-1">@producto.Nombre</h5>
+                    <h5 class="card-title fw-bold text-white mb-1">@producto.Nombre</h5>
                     <p class="card-text text-muted small flex-grow-1 mt-2">
                         @(producto.Descripcion?.Length > 60 ? producto.Descripcion.Substring(0, 60) + "..." : producto.Descripcion ?? "Sin descripción")
                     </p>
                     <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
-                        <span class="fs-4 fw-bold text-primary">@producto.Precio.ToString("C")</span>
+                        <span class="fs-4 fw-bold" style="color: #00f0ff !important;">Bs @producto.Precio.ToString("F2")</span>
                         @if (producto.Cantidad > 0)
                         {
                             <button class="btn btn-sm btn-gradient add-to-cart" data-id="@producto.Id">
@@ -54,80 +56,66 @@
 </div>
 
 <style>
-    /* 1. Todo el fondo de la pantalla en negro absoluto y textos claros */
+    /* 1. Fondo de la Tienda usando la paleta AdoMarket */
     body, html, main, .container-fluid, .container {
-        background-color: #000000 !important;
+        background-color: #050811 !important;
+        background: radial-gradient(circle at top, #0a1128 0%, #050811 100%) !important;
         color: #ffffff !important;
     }
 
-    /* Cambiar textos principales a blanco para que se lean sobre el fondo negro */
-    h1.text-dark, .card-title.text-dark {
-        color: #ffffff !important;
-    }
-
-    /* Icono del título en Rojo */
-    .bi-shop.text-primary {
-        color: #dc3545 !important;
-    }
-
-    /* 2. Las tarjetas de los productos en negro secundario brillante */
+    /* 2. Tarjetas en Azul Marino Profundo */
     .producto-card {
-        background-color: #121212 !important;
-        border: 1px solid #222222 !important;
+        background-color: #0b132b !important;
+        border: 1px solid #1c2541 !important;
         border-radius: 1rem;
-        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.05);
         transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
     }
 
-    /* Contenedor interno de la imagen en un gris muy oscuro */
-    .card-img-top.bg-light {
-        background-color: #1a1a1a !important;
+    /* Contenedor de la foto en gris oscuro/marino */
+    .card-img-top {
+        background-color: #0a1128 !important;
     }
 
-    /* 3. El efecto Hover cambia a Rojo */
+    /* 3. Efecto Hover con brillo Azul Eléctrico Neón */
     .producto-card:hover {
         transform: translateY(-8px);
-        border-color: #dc3545 !important;
-        box-shadow: 0 12px 25px rgba(220, 53, 69, 0.25) !important;
+        border-color: #00f0ff !important;
+        box-shadow: 0 0 20px rgba(0, 240, 255, 0.4) !important;
     }
 
-    /* 4. El texto de los precios en Rojo Brillante */
-    .text-primary, .fs-4.fw-bold {
-        color: #ff4d5a !important;
-    }
-
-    /* Linea divisoria interna en color oscuro */
+    /* Línea divisoria interna */
     .border-top {
-        border-top: 1px solid #2d2d2d !important;
+        border-top: 1px solid #1c2541 !important;
     }
 
-    /* 5. Botones en estilo Rojo Sólido */
+    /* 4. Botón de Agregar estilo Azul Eléctrico */
     .btn-gradient, .add-to-cart {
-        background-color: #dc3545 !important;
+        background-color: #007bff !important;
         background-image: none !important;
         color: #ffffff !important;
-        border: none !important;
+        border: 1px solid #0056b3 !important;
         font-weight: 600;
-        transition: background-color 0.2s;
+        transition: all 0.2s ease;
     }
 
     .btn-gradient:hover, .add-to-cart:hover {
-        background-color: #b30006 !important;
-        color: #ffffff !important;
+        background-color: #00f0ff !important;
+        border-color: #00f0ff !important;
+        color: #050811 !important;
+        box-shadow: 0 0 10px #00f0ff;
     }
 
-    /* Estilo para las alertas flotantes de SweetAlert (Toasts) */
+    /* 5. Estilo de los Toasts de SweetAlert con borde Neón */
     .swal2-popup.swal2-toast {
-        background-color: #121212 !important;
+        background-color: #0b132b !important;
         color: #ffffff !important;
-        border: 1px solid #dc3545 !important;
+        border: 1px solid #00f0ff !important;
     }
 </style>
 
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Configuración de SweetAlert para Toasts
             const Toast = Swal.mixin({
                 toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
             });
@@ -136,13 +124,13 @@
                 var btn = $(this);
                 var productoId = btn.data('id');
 
-                // Efecto de carga en el botón
                 var iconOriginal = btn.html();
                 btn.html('<span class="spinner-border spinner-border-sm"></span>');
 
+                // Aseguramos que la propiedad del POST coincida exactamente con tu backend (productoId)
                 $.post('/Tienda/AgregarAlCarrito', { productoId: productoId, cantidad: 1 })
                     .done(function(response) {
-                        btn.html(iconOriginal); // Restaurar botón
+                        btn.html(iconOriginal);
                         if (response.success) {
                             if (response.count > 0) {
                                 $('#cart-badge').text(response.count).show();
