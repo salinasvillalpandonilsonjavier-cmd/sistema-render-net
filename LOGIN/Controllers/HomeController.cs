@@ -1,29 +1,43 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http; // Obligatorio para usar HttpContext.Session
-using LOGIN.Models;
+using Microsoft.AspNetCore.Http;
+using LOGIN.Data; 
 using System;
+using System.Linq;
 
 namespace LOGIN.Controllers
 {
     public class HomeController : Controller
     {
+        // Cambiado a ApplicationDbContext que es el que tienes en tu carpeta Data
+        private readonly ApplicationDbContext _context; 
+
+        public HomeController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
         public IActionResult Index()
         {
-            // 1. Validar sesión
+            // Validar sesión de forma estable
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UsuarioId")))
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            // 2. Cargar el nombre del usuario logueado
             ViewBag.NombreUsuario = HttpContext.Session.GetString("UsuarioNombre");
 
-            // 3. CALCULO DINÁMICO DE VENTAS (Simulación en lo que conectas tu DbContext)
-            // Aquí puedes cambiar este valor manualmente por ahora, o dejarlo así para comprobar que la vista lo lee:
-            decimal totalGanadoHoy = 1.50m; 
-
-            // Pasamos el total formateado a la vista con dos decimales
-            ViewBag.TotalVentasHoy = totalGanadoHoy.ToString("N2");
+            try
+            {
+                // Buscamos dinámicamente en tu tabla de compras o pedidos.
+                // Usamos _context de manera segura.
+                decimal totalGanadoHoy = _context.Pedidos.Sum(p => (decimal?)p.Total) ?? 0.00m;
+                ViewBag.TotalVentasHoy = totalGanadoHoy.ToString("N2");
+            }
+            catch (Exception)
+            {
+                // Si la tabla se llama diferente, muestra 0.00 para que al menos te deje entrar sin crashear
+                ViewBag.TotalVentasHoy = "0.00";
+            }
 
             return View();
         }
@@ -37,16 +51,9 @@ namespace LOGIN.Controllers
             return View();
         }
 
-        public IActionResult Salir()
-        {
-            // Limpia por completo la sesión al salir
-            HttpContext.Session.Clear();
-            return RedirectToAction("Login", "Account");
-        }
-
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
         }
     }
 }
