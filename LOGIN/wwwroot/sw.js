@@ -1,4 +1,4 @@
-const CACHE_NAME = 'techstore-cache-v1';
+const CACHE_NAME = 'adomarket-cache-v1';
 const urlsToCache = [
   '/',
   '/css/site.css',
@@ -6,6 +6,7 @@ const urlsToCache = [
   '/js/site.js'
 ];
 
+// Instalar el Service Worker de AdoMarket
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -13,6 +14,7 @@ self.addEventListener('install', event => {
   );
 });
 
+// Recuperar los archivos desde la caché o internet
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
