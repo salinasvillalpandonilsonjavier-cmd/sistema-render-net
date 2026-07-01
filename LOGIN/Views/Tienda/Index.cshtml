@@ -9,10 +9,18 @@
             <i class="bi bi-shop me-2" style="color: #00f0ff !important;"></i>Catálogo
         </h1>
         <p class="text-muted mt-2">Encuentra los mejores productos al mejor precio.</p>
+        
+        <!-- CONTROL DE VOZ INTEGRADO -->
+        <div class="d-flex align-items-center mt-2">
+            <button id="btnVoz" class="btn btn-sm btn-outline-info rounded-pill px-3">
+                <i class="bi bi-mic-fill me-1"></i> Hablar con la App
+            </button>
+            <span id="estadoVoz" class="text-muted small ms-3 fst-italic"></span>
+        </div>
     </div>
     <a asp-action="Carrito" class="btn btn-primary rounded-pill px-4 py-2 position-relative shadow-sm" style="background-color: #007bff !important; border-color: #0056b3 !important;">
         <i class="bi bi-cart3 fs-5"></i>
-        <span id=\"cart-badge\" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: @(ViewBag.CarritoCount > 0 ? "block" : "none");">
+        <span id="cart-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="display: @(ViewBag.CarritoCount > 0 ? "block" : "none");">
             @ViewBag.CarritoCount
         </span>
         <span class="ms-2 fw-semibold">Mi Carrito</span>
@@ -115,6 +123,16 @@
         box-shadow: 0 0 10px #00f0ff;
     }
 
+    #btnVoz {
+        border-color: #00f0ff !important;
+        color: #00f0ff !important;
+    }
+    #btnVoz:hover {
+        background-color: #00f0ff !important;
+        color: #050811 !important;
+        box-shadow: 0 0 10px #00f0ff;
+    }
+
     /* 5. Estilo de los Toasts de SweetAlert con borde Neón */
     .swal2-popup.swal2-toast {
         background-color: #0b132b !important;
@@ -130,6 +148,7 @@
                 toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true
             });
 
+            // LÓGICA DE AGREGAR AL CARRITO VÍA AJAX
             $('.add-to-cart').click(function() {
                 var btn = $(this);
                 var productoId = btn.data('id');
@@ -154,6 +173,76 @@
                         Toast.fire({ icon: 'error', title: 'Error de conexión' });
                     });
             });
+
+            // ==========================================
+            // NUEVO: SISTEMA DE AUDIO (VOZ Y OÍDOS)
+            // ==========================================
+            const btnVoz = document.getElementById('btnVoz');
+            const estadoVoz = document.getElementById('estadoVoz');
+
+            // 1. OÍDOS: Reconocimiento de Voz nativo
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            
+            if (SpeechRecognition) {
+                const recognition = new SpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.interimResults = false;
+
+                btnVoz.onclick = () => {
+                    try {
+                        recognition.start();
+                        estadoVoz.textContent = "Te escucho...";
+                        estadoVoz.className = "text-info small ms-3";
+                    } catch (e) {
+                        console.log("Reconocimiento ya activo");
+                    }
+                };
+
+                recognition.onresult = (event) => {
+                    const comando = event.results[0][0].transcript.toLowerCase();
+                    estadoVoz.textContent = `Entendido: "${comando}"`;
+                    estadoVoz.className = "text-success small ms-3";
+
+                    // Evaluar comandos de voz básicos
+                    if (comando.includes("ver carrito") || comando.includes("ir al carrito") || comando.includes("abrir carrito")) {
+                        hablar("Abriendo tu carrito de compras");
+                        setTimeout(() => { window.location.href = '/Tienda/Carrito'; }, 1200);
+                    } 
+                    else if (comando.includes("inicio") || comando.includes("panel") || comando.includes("atrás")) {
+                        hablar("Regresando al panel de control");
+                        setTimeout(() => { window.location.href = '/Home/Index'; }, 1200);
+                    }
+                    else {
+                        hablar(`No entendí el comando ${comando}, intenta decir ver carrito`);
+                    }
+                };
+
+                recognition.onerror = () => {
+                    estadoVoz.textContent = "No logré escucharte.";
+                    estadoVoz.className = "text-danger small ms-3";
+                };
+
+                recognition.onend = () => {
+                    if(estadoVoz.textContent === "Te escucho...") {
+                        estadoVoz.textContent = "";
+                    }
+                };
+
+            } else {
+                btnVoz.style.display = 'none';
+                console.log("Tu navegador no soporta reconocimiento de voz nativo.");
+            }
+
+            // 2. VOZ: Sintetizador de Voz nativo
+            function hablar(texto) {
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel(); // Detiene cualquier audio anterior
+                    const mensaje = new SpeechSynthesisUtterance(texto);
+                    mensaje.lang = 'es-ES';
+                    mensaje.rate = 1.1; // Velocidad de habla ligeramente más rápida
+                    window.speechSynthesis.speak(mensaje);
+                }
+            }
         });
     </script>
 }
